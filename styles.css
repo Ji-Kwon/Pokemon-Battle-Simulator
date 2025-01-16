@@ -1,0 +1,254 @@
+html{
+    height: 100%;
+    background: radial-gradient(#ffffff, #9198e5) no-repeat;
+    background-size: cover;
+    
+}
+
+@font-face {
+    src: url('../assets/fonts/pokemon-dp-pro.ttf');
+    font-family: pokemon;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    font-family: pokemon;
+    margin: 0;
+    padding: 0;
+}
+
+main{
+    padding: 2rem;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}
+
+footer {
+    text-align: center;
+    padding: 0rem;
+    background-color: #333;
+    color: white;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.battle{
+    margin: 8vw 0 0 8vw;
+}
+
+.battle-area, .chat{
+    display: inline-block;
+}
+
+.battle-area{
+    position: absolute;
+    width: 60vw;
+    height: 30vw;
+    background-image: url(/assets/images/battle_background2.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #333;
+
+}
+
+.pokeball{
+    width: 2vw;
+    display: none;
+}
+
+.sprite{
+    position: absolute;
+    z-index: 10; 
+    width: 16vw;
+}
+
+.oppdiv{
+    flex-direction: column;
+    margin-top: 1vw;
+    display: none;
+}
+
+.oppPokeball{
+    display: flex;
+    margin-left: auto;
+    top: .5vw;
+    right: 1vw;
+    justify-content: flex-start;
+    position: absolute;
+    gap: .5vw;
+}
+
+.oppHealthBar{
+    width: 30vw;
+    height: 5vw;
+    margin-left: auto;
+    margin-top: 0;
+    background-color: white;
+    display: flex;
+    position: absolute;
+    top: 3vw;
+    right: 0vw;
+}
+
+.oppHP{
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 3vw;
+    position: absolute;
+}
+
+
+.oppPkm {
+    position: absolute;
+    top: 6vw;
+    right: 23vw;
+}
+
+.userdiv{
+    flex-direction: column;
+    margin-top: 1vw;
+    position: relative;
+    display: none;
+}
+
+.userPokeball{
+    display: flex;
+    margin-right: auto;
+    margin-top: 0;
+    justify-content: flex-start;
+    position: absolute;
+    top: 9.5vw;
+    left: 1vw;
+    gap: 0.5vw;
+    
+}
+
+.userHealthBar{
+    width: 30vw;
+    height: 5vw;
+    margin-right: auto;
+    margin-top: 0;
+    background-color: white;
+    display: flex;
+    position: absolute;
+    top: 12vw;
+    left: 0vw;
+}
+
+.userHP{
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 3vw;
+    position: absolute;
+}
+
+.userPkm{
+    position: absolute;
+    top: 16vw;
+    left: 6vw;
+    z-index: 6;
+}
+
+.buttons{
+    width: 60vw;
+    height: 15vw;
+    background-color: rgb(145, 152, 229);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #333;
+    margin: 0;
+    position: absolute;
+    top: 38vw;
+    z-index: 7;
+    
+}
+
+.start{
+    margin-top: 4vw;
+}
+
+.startbtn{
+    width: 20vw;
+    font-size: 4vw;
+    display: block;
+}
+
+.moves{
+    margin: 0;   
+}
+
+.switchPkm{
+    margin-top: 3vw;
+    gap: .4vw;
+}
+
+.moves, .switchPkm{
+    display: flex;
+}
+
+.move{
+    display: none;
+    width: 14vw;
+    height: 4vw;
+    font-size: 2vw;
+    line-height: 0;
+    line-height: normal;
+    justify-content: center;
+    align-items: center;
+}
+
+.pkm{
+    display: none;
+    width: 9vw;
+    height: 2vw;
+    font-size: 2vw;
+    line-height: normal;
+    justify-content: center;
+    align-items: center;
+}
+
+button{
+    text-align: center;
+    font-family: pokemon;
+}
+
+.chat{
+    display: flex;
+    flex-direction: column;
+    width: 25vw;
+    height: 45vw;
+    background-color: white;
+    margin-top: 8vw;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #333;
+    position: relative;
+    left: 60vw;
+    z-index: 10;
+    overflow-y: auto;
+}
+
+p{
+    color: black;
+    z-index: 11;
+    font-size: 2vw;
+    display: block;
+    margin: 1vw 0 0 1vw;
+}

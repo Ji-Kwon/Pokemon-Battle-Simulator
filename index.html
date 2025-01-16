@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Battle Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="battle" id="battle">
+        <div class="battle-area" id="battle-area">
+            <div class="oppdiv" id="oppdiv">
+                <div class="oppPokeball" id="oppPokeball">
+                    <image class="pokeball" id="oppBall0" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="oppBall1" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="oppBall2" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="oppBall3" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="oppBall4" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="oppBall5" src="/assets/images/pokeball.png"></image>
+                </div>
+                <div class="oppHealthBar" id="oppHealthBar">
+                    <p class="oppHP" id="oppHP">HP: 100%</p>
+                </div>
+                <div class="oppPkm" id="oppPkm">
+                    <image class="sprite" id="oppSprite" src=""></image>
+                </div>
+            </div>
+
+            <div class="userdiv" id="userdiv">
+                <div class="userPokeball" id="userPokeball">
+                    <image class="pokeball" id="userBall0" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="userBall1" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="userBall2" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="userBall3" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="userBall4" src="/assets/images/pokeball.png"></image>
+                    <image class="pokeball" id="userBall5" src="/assets/images/pokeball.png"></image>
+                </div>
+                <div class="userHealthBar" id="userHealthBar">
+                    <p class="userHP" id="userHP">HP: 99%</p>
+                </div>
+                <div class="userPkm" id="userPkm">
+                    <image class="sprite" id="userSprite" src=""></image>
+                </div>
+            </div>
+
+            <div class="text-box" id="text-box">
+
+            </div>
+        </div>
+        <div class="buttons" id="buttons">
+            <div class="start">
+                <button class="startbtn" id="startbtn">Start Battle</button>
+            </div>
+            <div class="moves" id="moves">
+                <button class="move" id="move0"></button>
+                <button class="move" id="move1"></button>
+                <button class="move" id="move2"></button>
+                <button class="move" id="move3"></button>
+            </div>
+            <div class="switchPkm" id="switchPkm">
+                <button class="pkm" id="pkm0"></button>
+                <button class="pkm" id="pkm1"></button>
+                <button class="pkm" id="pkm2"></button>
+                <button class="pkm" id="pkm3"></button>
+                <button class="pkm" id="pkm4"></button>
+                <button class="pkm" id="pkm5"></button>
+            </div>
+        </div>
+    </div>
+    <div class="chat" id="chat">
+        <h3 class="turn" id="turn"></h3>
+        <p class="battleText" id="battleText"></p>
+    </div>
+    
+    <!-- 
+    <div class="import-box" id="import-box">
+        <form class="pkmForm">
+            <label for="inputText">Enter your team: </label>
+            <input type="text" id="inputText" name="inputText" placeholder="Please use Pokemon Showdown Teambuilder.">
+            <button type="submit">Submit</button>
+        </form>
+    </div>-->
+    
+<script src="battlescript.js"></script>
+</body>
+</html>
