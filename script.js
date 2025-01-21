@@ -12,6 +12,8 @@ const pkmButton4 = document.getElementById("pkm3");
 const pkmButton5 = document.getElementById("pkm4");
 const pkmButton6 = document.getElementById("pkm5");
 const pkmButtons = document.querySelectorAll(".pkm");
+const oppBalls = document.querySelectorAll(".oppBall");
+const userBalls = document.querySelectorAll(".userBall");
 const startButton = document.getElementById("startbtn");
 const userdiv = document.getElementById("userdiv");
 const oppdiv = document.getElementById("oppdiv");
@@ -551,6 +553,8 @@ function isFainted(pokemon){
 
 function userFainted(){
     userFaintedCount++;
+    const faintedBall = document.getElementById(`userBall${selectedPokemon}`);
+    faintedBall.src = "/assets/images/pokeball-fainted.png";
     const faintedButton = document.getElementById(`pkm${selectedPokemon}`);
     
     moveButtons.forEach(button => {
@@ -585,6 +589,8 @@ function userFainted(){
 
 function oppFainted(){
     oppFaintedCount++
+    const faintedBall = document.getElementById(`oppBall${oppFaintedCount - 1}`);
+    faintedBall.src = "/assets/images/pokeball-fainted.png";
     if(oppFaintedCount >= oppPokemonArray.length){
         endBattle();
     }else {
