@@ -6,7 +6,7 @@ html{
 }
 
 @font-face {
-    src: url('../assets/fonts/pokemon-dp-pro.ttf');
+    src: url('./assets/fonts/pokemon-dp-pro.ttf');
     font-family: pokemon;
 }
 
@@ -53,7 +53,7 @@ footer {
     position: absolute;
     width: 60vw;
     height: 30vw;
-    background-image: url(/assets/images/battle_background2.png);
+    background-image: url(./assets/images/battle_background2.png);
     background-size: cover;
     background-repeat: no-repeat;
     margin: 0;
