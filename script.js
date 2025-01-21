@@ -15,6 +15,7 @@ const pkmButtons = document.querySelectorAll(".pkm");
 const oppBalls = document.querySelectorAll(".oppBall");
 const userBalls = document.querySelectorAll(".userBall");
 const startButton = document.getElementById("startbtn");
+const playButton = document.getElementById("playbtn");
 const userdiv = document.getElementById("userdiv");
 const oppdiv = document.getElementById("oppdiv");
 const userSprite = document.getElementById("userSprite");
@@ -30,7 +31,6 @@ let userTurnComplete = false;
 let oppTurnComplete = false;
 let userDamage;
 let oppDamage;
-
 
 const natureModifiers = {
     Hardy: { atk: 1, def: 1, spA: 1, spD: 1, spe: 1 }, // Neutral nature
@@ -59,7 +59,6 @@ const natureModifiers = {
     Careful: { atk: 1, def: 1, spA: 0.9, spD: 1.1, spe: 1 },
     Quirky: { atk: 1, def: 1, spA: 1, spD: 1, spe: 1 } // Neutral nature
 };
-
 const userPokemonArray = [
     {
         name: "Gliscor",
@@ -200,7 +199,6 @@ const userPokemonArray = [
         ]
     }
 ];
-
 const oppPokemonArray = [
     {
         name: 'Mamoswine',
@@ -341,118 +339,6 @@ const oppPokemonArray = [
         ]
     }
 ];
-
-
-function startBattle(){
-    startButton.style.display = "none";
-    for(let i = 0; i < pkmButtons.length; i++){
-        pkmButtons[i].style.display = "flex";
-        pkmButtons[i].innerHTML = userPokemonArray[i].name;
-    }
-}
-function spawnUserPokemon(index){
-    userdiv.style.display = "flex";
-    userHp.innerHTML = `HP: ${userPokemonArray[index].currHp} / ${userPokemonArray[index].maxHp}`;
-    userSprite.src = userPokemonArray[index].sprite;
-    let pkmMoves = userPokemonArray[index].moves
-    for(let i = 0; i < moveButtons.length; i++){
-        if(i<pkmMoves.length){
-            moveButtons[i].style.display = "flex";
-            moveButtons[i].innerHTML = pkmMoves[i].name;    
-        }
-        else{
-            moveButtons[i].style.display = "none";
-        }
-    }
-}
-
-function spawnOppPokemon(index){
-    oppdiv.style.display = "flex";
-    oppHp.innerHTML = `HP: ${oppPokemonArray[index].currHp} / ${oppPokemonArray[index].maxHp}`;
-    oppSprite.src = oppPokemonArray[index].sprite;
-}
-
-function attack(userPkmIndex, oppPkmIndex, moveIndex){
-    userPkm = userPokemonArray[userPkmIndex];
-    oppPkm = oppPokemonArray[oppPkmIndex];
-    userMove = userPkm.moves[moveIndex];
-    oppMove = oppPkm.moves[Math.floor(Math.random()*4)];
-    let userMoveLog;
-    let oppMoveLog;
-
-    userDamage = calculateDamage(userPkm, oppPkm, userMove);
-    oppDamage = calculateDamage(userPkm, oppPkm, oppMove);
-
-        // Determine turn order based on speed
-        const userFirst = userPkm.currSpe > oppPkm.currSpe || 
-        (userPkm.currSpe === oppPkm.currSpe && Math.random() < 0.5);
-
-    if (userFirst) {
-        // User attacks first
-        const userDamage = calculateDamage(userPkm, oppPkm, userMove);
-        oppPkm.currHp = Math.max(oppPkm.currHp - userDamage, 0);
-        oppHp.innerHTML = `HP: ${oppPkm.currHp} / ${oppPkm.maxHp}`;
-        userMoveLog = `${userPkm.name} used ${userMove.name}!`;
-
-        if (isFainted(oppPkm)) {
-            userMoveLog += `${oppPkm.name} fainted!`;
-            oppFainted();
-            return;
-        }
-
-        // Opponent attacks if still alive
-        const oppDamage = calculateDamage(oppPkm, userPkm, oppMove);
-        userPkm.currHp = Math.max(userPkm.currHp - oppDamage, 0);
-        userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
-        oppMoveLog = `${oppPkm.name} used ${oppMove.name}!`;
-
-        if (isFainted(userPkm)) {
-            oppMoveLog += `${userPkm.name} fainted!`;
-            userFainted();
-        }
-        logTurn(userMoveLog, oppMoveLog);
-
-    } else {
-        // Opponent attacks first
-        const oppDamage = calculateDamage(oppPkm, userPkm, oppMove);
-        userPkm.currHp = Math.max(userPkm.currHp - oppDamage, 0);
-        userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
-        oppMoveLog = `${oppPkm.name} used ${oppMove.name}!`;
-
-        if (isFainted(userPkm)) {
-            oppMoveLog += `${userPkm.name} fainted!`;
-            userFainted();
-        return;
-        }
-
-        // User attacks if still alive
-        const userDamage = calculateDamage(userPkm, oppPkm, userMove);
-        oppPkm.currHp = Math.max(oppPkm.currHp - userDamage, 0);
-        oppHp.innerHTML = `HP: ${oppPkm.currHp} / ${oppPkm.maxHp}`;
-        userMoveLog = `${userPkm.name} used ${userMove.name}!`;
-
-        if (isFainted(oppPkm)) {
-            userMoveLog += `${oppPkm.name} fainted!`;
-            oppFainted();
-        }
-        logTurn(oppMoveLog, userMoveLog);
-    }
-    
-    
-}
-
-function calculateDamage(attacker, defender, move){
-    const power = move.power;
-    const attackStat = move.category === "physical" ? attacker.currAtk : attacker.currSpA;
-    const defenseStat = move.category === "physical" ? defender.currDef : defender.currSpD;
-
-    const damage = Math.floor(
-        ((((2 * attacker.level) / 5 + 2) * power * (attackStat / defenseStat)) / 50) + 2
-    );
-
-    return Math.max(damage, 1); // Ensure at least 1 damage
-}
-
 function calculateStats(pokemon) {
     const nature = natureModifiers[pokemon.nature];
 
@@ -481,7 +367,6 @@ function calculateStats(pokemon) {
     ) * nature.spe;
     return { hp, atk, def, spA, spD, spe};
 }
-
 function updateStats(){
     for(let i=0; i < userPokemonArray.length; i++){
         const userPkm = userPokemonArray[i];
@@ -509,129 +394,51 @@ function updateStats(){
     }
     
 }
+function startBattle(){
+    startButton.style.display = "none";
+    for(let i = 0; i < pkmButtons.length; i++){
+        pkmButtons[i].style.display = "flex";
+        pkmButtons[i].innerHTML = userPokemonArray[i].name;
+    }
+}
+function endBattle(){
+    switch (true) {
+        case userFaintedCount >= userPokemonArray.length:
+            setTimeout(() => {
+                alert("Game over! All user Pokémon have fainted.");
+            }, 100); // Delay of 100ms
+            break;
+        case oppFaintedCount >= oppPokemonArray.length:
+            setTimeout(() => {
+                alert("Game over! You win.");
+            }, 100); // Delay of 100ms
+            break;
+    }
+}
 
-function switchPokemon(index){
-    const userPkm = userPokemonArray[index];
-    selectedPokemon = index;
+function playAgain(){
 
-    userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
-    userSprite.src = userPkm.sprite;
-
+}
+function spawnUserPokemon(index){
+    userdiv.style.display = "flex";
+    userHp.innerHTML = `HP: ${userPokemonArray[index].currHp} / ${userPokemonArray[index].maxHp}`;
+    userSprite.src = userPokemonArray[index].sprite;
     let pkmMoves = userPokemonArray[index].moves
     for(let i = 0; i < moveButtons.length; i++){
         if(i<pkmMoves.length){
-            moveButtons[i].innerHTML = pkmMoves[i].name;
-            moveButtons[i].style.display = "flex";    
+            moveButtons[i].style.display = "flex";
+            moveButtons[i].innerHTML = pkmMoves[i].name;    
         }
         else{
             moveButtons[i].style.display = "none";
         }
     }
-    logChat = `User sent out ${userPokemonArray[index].name}! <br>`;
-    
-    
-    // Opponent attacks during switch
-    const oppPkm = oppPokemonArray[oppFaintedCount];
-    const oppMove = oppPkm.moves[Math.floor(Math.random() * 4)];
-    const oppDamage = calculateDamage(oppPkm, userPkm, oppMove);
-    
-    userPkm.currHp = Math.max(userPkm.currHp - oppDamage, 0);
-    userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
-    logChat += `${oppPkm.name} used ${oppMove.name}!`;
-
-    // Check if the switched Pokémon fainted from the opponent's attack
-    if (isFainted(userPkm)) {
-        logChat += ` "", ${userPkm.name} fainted!`;
-        userFainted();
-    }
-logTurn(logChat);
 }
-
-function isFainted(pokemon){
-    return pokemon.currHp <=0;
+function spawnOppPokemon(index){
+    oppdiv.style.display = "flex";
+    oppHp.innerHTML = `HP: ${oppPokemonArray[index].currHp} / ${oppPokemonArray[index].maxHp}`;
+    oppSprite.src = oppPokemonArray[index].sprite;
 }
-
-function userFainted(){
-    userFaintedCount++;
-    const faintedBall = document.getElementById(`userBall${selectedPokemon}`);
-    faintedBall.src = "/assets/images/pokeball-fainted.png";
-    const faintedButton = document.getElementById(`pkm${selectedPokemon}`);
-    
-    moveButtons.forEach(button => {
-        button.style.display = "none"; // Set display to none
-    });
-    
-    if (faintedButton) {
-        faintedButton.disabled = true;
-        faintedButton.style.opacity = 0.5; // Dim the button for visual feedback
-        faintedButton.style.cursor = "default"; // Change cursor style
-    }
-
-    // Check if there are any Pokémon left to switch to
-    if (userFaintedCount >= userPokemonArray.length) {
-        // If no Pokémon are left, end the battle
-        endBattle();
-    } else {
-        // Prompt the user to select another Pokémon
-        logTurn("Your Pokémon has fainted! Choose another Pokémon to continue the battle.");
-        // Optionally highlight available buttons
-        userPokemonArray.forEach((pkm, index) => {
-            const button = document.getElementById(`pkm${index}`);
-            if (pkm.currHp > 0) {
-                button.disabled = false; // Enable buttons for non-fainted Pokémon
-                button.style.opacity = 1; // Restore normal appearance
-                button.style.cursor = "pointer"; // Restore clickable cursor
-            }
-        });
-    }
-
-}
-
-function oppFainted(){
-    oppFaintedCount++
-    const faintedBall = document.getElementById(`oppBall${oppFaintedCount - 1}`);
-    faintedBall.src = "/assets/images/pokeball-fainted.png";
-    if(oppFaintedCount >= oppPokemonArray.length){
-        endBattle();
-    }else {
-        spawnOppPokemon(oppFaintedCount); // Send out the next opponent Pokémon
-        logTurn(`Opponent sent out ${oppPokemonArray[oppFaintedCount].name}!`, "");
-    }
-}
-
-function endBattle(){
-    switch (true) {
-        case userFaintedCount >= 5:
-            alert("Game over! All user Pokémon have fainted.");
-            break;
-        case oppFaintedCount >= 5:
-            alert("Game over! You win.");
-            break;
-    }
-}
-
-function chatText(message){
-    const newMessage = document.createElement("p");
-    newMessage.innerHTML = message;
-
-    chatLog.appendChild(newMessage);
-    chatLog.scrollTop = chatLog.scrollHeight;
-}
-
-function logTurn(userInput, oppInput){
-    if(turnCount <=0){
-        turnCount++;
-    }
-    else{
-    chatText(`Turn${turnCount}:`)
-    chatText(userInput);
-    if (oppInput) {
-        chatText(oppInput); 
-    }
-    turnCount++;
-    }
-}
-
 function selectPokemon(index, prev){
     pkmButtons.forEach((button, i) => {
         const pokemon = userPokemonArray[i];
@@ -671,44 +478,236 @@ function selectPokemon(index, prev){
         switchPokemon(index);
     }
 }
+function switchPokemon(index){
+    const userPkm = userPokemonArray[index];
+    selectedPokemon = index;
 
+    userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
+    userSprite.src = userPkm.sprite;
+
+    let pkmMoves = userPokemonArray[index].moves
+    for(let i = 0; i < moveButtons.length; i++){
+        if(i<pkmMoves.length){
+            moveButtons[i].innerHTML = pkmMoves[i].name;
+            moveButtons[i].style.display = "flex";    
+        }
+        else{
+            moveButtons[i].style.display = "none";
+        }
+    }
+    logChat = `User sent out ${userPokemonArray[index].name}! <br>`;
+    
+    
+    // Opponent attacks during switch
+    const oppPkm = oppPokemonArray[oppFaintedCount];
+    const oppMove = oppPkm.moves[Math.floor(Math.random() * 4)];
+    const oppDamage = calculateDamage(oppPkm, userPkm, oppMove);
+    
+    userPkm.currHp = Math.max(userPkm.currHp - oppDamage, 0);
+    userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
+    logChat += `${oppPkm.name} used ${oppMove.name}!`;
+
+    // Check if the switched Pokémon fainted from the opponent's attack
+    if (isFainted(userPkm)) {
+        logChat += ` "", ${userPkm.name} fainted!`;
+        userFainted();
+    }
+logTurn(logChat);
+}
+function attack(userPkmIndex, oppPkmIndex, moveIndex){
+    userPkm = userPokemonArray[userPkmIndex];
+    oppPkm = oppPokemonArray[oppPkmIndex];
+    userMove = userPkm.moves[moveIndex];
+    oppMove = oppPkm.moves[Math.floor(Math.random()*4)];
+    let userMoveLog;
+    let oppMoveLog;
+
+    userDamage = calculateDamage(userPkm, oppPkm, userMove);
+    oppDamage = calculateDamage(userPkm, oppPkm, oppMove);
+
+        // Determine turn order based on speed
+        const userFirst = userPkm.currSpe > oppPkm.currSpe || 
+        (userPkm.currSpe === oppPkm.currSpe && Math.random() < 0.5);
+
+    if (userFirst) {
+        // User attacks first
+        const userDamage = calculateDamage(userPkm, oppPkm, userMove);
+        oppPkm.currHp = Math.max(oppPkm.currHp - userDamage, 0);
+        oppHp.innerHTML = `HP: ${oppPkm.currHp} / ${oppPkm.maxHp}`;
+        userMoveLog = `${userPkm.name} used ${userMove.name}!<br>`;
+
+        if (isFainted(oppPkm)) {
+            userMoveLog += `${oppPkm.name} fainted!`;
+            logTurn(userMoveLog);
+            oppFainted();
+            return;
+        }
+
+        // Opponent attacks if still alive
+        const oppDamage = calculateDamage(oppPkm, userPkm, oppMove);
+        userPkm.currHp = Math.max(userPkm.currHp - oppDamage, 0);
+        userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
+        oppMoveLog = `${oppPkm.name} used ${oppMove.name}!<br>`;
+
+        if (isFainted(userPkm)) {
+            oppMoveLog += `${userPkm.name} fainted!`;
+            logTurn(userMoveLog, oppMoveLog);
+            userFainted();
+            return;
+        }
+        logTurn(userMoveLog, oppMoveLog);
+
+    } else {
+        // Opponent attacks first
+        const oppDamage = calculateDamage(oppPkm, userPkm, oppMove);
+        userPkm.currHp = Math.max(userPkm.currHp - oppDamage, 0);
+        userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
+        oppMoveLog = `${oppPkm.name} used ${oppMove.name}!<br>`;
+
+        if (isFainted(userPkm)) {
+            oppMoveLog += `${userPkm.name} fainted!`;
+            logTurn(oppMoveLog);
+            userFainted();
+            return;
+        }
+
+        // User attacks if still alive
+        const userDamage = calculateDamage(userPkm, oppPkm, userMove);
+        oppPkm.currHp = Math.max(oppPkm.currHp - userDamage, 0);
+        oppHp.innerHTML = `HP: ${oppPkm.currHp} / ${oppPkm.maxHp}`;
+        userMoveLog = `${userPkm.name} used ${userMove.name}!<br>`;
+
+        if (isFainted(oppPkm)) {
+            userMoveLog += `${oppPkm.name} fainted!`;
+            logTurn(oppMoveLog,userMoveLog);
+            oppFainted();
+            return;
+        }
+        logTurn(oppMoveLog, userMoveLog);
+    }
+    
+    
+}
+function calculateDamage(attacker, defender, move){
+    const power = move.power;
+    const attackStat = move.category === "physical" ? attacker.currAtk : attacker.currSpA;
+    const defenseStat = move.category === "physical" ? defender.currDef : defender.currSpD;
+
+    const damage = Math.floor(
+        ((((2 * attacker.level) / 5 + 2) * power * (attackStat / defenseStat)) / 50) + 2
+    );
+
+    return Math.max(damage, 1); // Ensure at least 1 damage
+}
+function isFainted(pokemon){
+    return pokemon.currHp <=0;
+}
+function userFainted(){
+    userFaintedCount++;
+    const faintedBall = document.getElementById(`userBall${selectedPokemon}`);
+    faintedBall.src = "/assets/images/pokeball-fainted.png";
+    const faintedButton = document.getElementById(`pkm${selectedPokemon}`);
+    
+    moveButtons.forEach(button => {
+        button.style.display = "none"; // Set display to none
+    });
+    
+    if (faintedButton) {
+        faintedButton.disabled = true;
+        faintedButton.style.opacity = 0.5; // Dim the button for visual feedback
+        faintedButton.style.cursor = "default"; // Change cursor style
+    }
+
+    // Check if there are any Pokémon left to switch to
+    if (userFaintedCount >= userPokemonArray.length) {
+        // If no Pokémon are left, end the battle
+        endBattle();
+    } else {
+        // Prompt the user to select another Pokémon
+        logTurn("Your Pokémon has fainted! Choose another Pokémon to continue the battle.");
+        // Optionally highlight available buttons
+        userPokemonArray.forEach((pkm, index) => {
+            const button = document.getElementById(`pkm${index}`);
+            if (pkm.currHp > 0) {
+                button.disabled = false; // Enable buttons for non-fainted Pokémon
+                button.style.opacity = 1; // Restore normal appearance
+                button.style.cursor = "pointer"; // Restore clickable cursor
+            }
+        });
+    }
+
+}
+function oppFainted(){
+    oppFaintedCount++
+    const faintedBall = document.getElementById(`oppBall${oppFaintedCount - 1}`);
+    faintedBall.src = "/assets/images/pokeball-fainted.png";
+    if(oppFaintedCount >= oppPokemonArray.length){
+        endBattle();
+    }else {
+        spawnOppPokemon(oppFaintedCount); // Send out the next opponent Pokémon
+        chatText(`Opponent sent out ${oppPokemonArray[oppFaintedCount].name}!`);
+    }
+}
+function chatText(message){
+    const newMessage = document.createElement("p");
+    const newTurn = document.createElement("h3");
+    if(message === `Turn${turnCount}:`){
+        newTurn.innerHTML = message;
+        chatLog.appendChild(newTurn);
+    }
+    else{
+        newMessage.innerHTML = message;
+        chatLog.appendChild(newMessage);
+       
+    }
+    
+    
+    chatLog.scrollTop = chatLog.scrollHeight;
+}
+function logTurn(userInput, oppInput){
+    if(turnCount <=0){
+        turnCount++;
+    }
+    else{
+    chatText(`Turn${turnCount}:`)
+    chatText(userInput);
+    if (oppInput) {
+        chatText(oppInput); 
+    }
+    turnCount++;
+    }
+}
 updateStats();
 
 startButton.addEventListener("click",function(){
     startBattle();
     logTurn();
 });
-
 pkmButton1.addEventListener("click", function(){
     previousPokemon = selectedPokemon;
     selectedPokemon = 0;
     selectPokemon(selectedPokemon,previousPokemon);
 });
-
 pkmButton2.addEventListener("click", function(){
     previousPokemon = selectedPokemon;
     selectedPokemon = 1;
     selectPokemon(selectedPokemon,previousPokemon);
-    });
-
+});
 pkmButton3.addEventListener("click", function(){
     previousPokemon = selectedPokemon;
     selectedPokemon = 2;
     selectPokemon(selectedPokemon,previousPokemon);
-    });
-
+});
 pkmButton4.addEventListener("click", function(){
     previousPokemon = selectedPokemon;
     selectedPokemon = 3;
     selectPokemon(selectedPokemon,previousPokemon);
-    });
-
+});
 pkmButton5.addEventListener("click", function(){
     previousPokemon = selectedPokemon;
     selectedPokemon = 4;
     selectPokemon(selectedPokemon,previousPokemon);
-    });
-
+});
 pkmButton6.addEventListener("click", function(){
     previousPokemon = selectedPokemon;
     selectedPokemon = 5;
