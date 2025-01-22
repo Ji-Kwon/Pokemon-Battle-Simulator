@@ -1,5 +1,8 @@
 const oppHp = document.getElementById("oppHP");
 const userHp = document.getElementById("userHP");
+const oppHealthBar = document.getElementById("oppHPBar");
+const userHealthBar = document.getElementById("userHPBar");
+const allButtons = document.querySelectorAll('button');
 const moveButton1 = document.getElementById("move0");
 const moveButton2 = document.getElementById("move1");
 const moveButton3 = document.getElementById("move2");
@@ -402,6 +405,12 @@ function startBattle(){
     }
 }
 function endBattle(){
+    pkmButtons.forEach(button =>{
+        button.style.display = "none";
+    })
+    moveButtons.forEach(button =>{
+        button.style.display = "none";
+    })
     switch (true) {
         case userFaintedCount >= userPokemonArray.length:
             setTimeout(() => {
@@ -414,10 +423,39 @@ function endBattle(){
             }, 100); // Delay of 100ms
             break;
     }
+    playButton.style.display = "block";
 }
 
 function playAgain(){
+    playButton.style.display = "none";
+    userdiv.style.display = "none";
+    oppdiv.style.display = "none";
+    // Reset game variables
+    turnCount = 1;
+    userFaintedCount = 0;
+    oppFaintedCount = 0;
+    chatLog.innerHTML = "";
+    userBalls.forEach(ball =>{
+        ball.src = "./assets/images/pokeball.png"
+    });
+    oppBalls.forEach(ball =>{
+        ball.src = "./assets/images/pokeball.png"
+    });
+    
+    // Reset Pokémon health
+    userPokemonArray.forEach(pokemon => {
+        pokemon.currHp = pokemon.maxHp;
+    });
+    oppPokemonArray.forEach(pokemon => {
+        pokemon.currHp = pokemon.maxHp;
+    });
 
+    for(let i=0; i < userPokemonArray.length; i++){
+        pkmButtons[i].style.display = "block";
+        pkmButtons[i].disabled = false;
+        pkmButtons[i].style.opacity = 1;
+        pkmButtons[i].innerHTML = userPokemonArray[i].name;
+    }
 }
 function spawnUserPokemon(index){
     userdiv.style.display = "flex";
@@ -477,11 +515,13 @@ function selectPokemon(index, prev){
     else{
         switchPokemon(index);
     }
+
+
 }
 function switchPokemon(index){
     const userPkm = userPokemonArray[index];
     selectedPokemon = index;
-
+    
     userHp.innerHTML = `HP: ${userPkm.currHp} / ${userPkm.maxHp}`;
     userSprite.src = userPkm.sprite;
 
@@ -511,10 +551,26 @@ function switchPokemon(index){
     if (isFainted(userPkm)) {
         logChat += ` "", ${userPkm.name} fainted!`;
         userFainted();
+        
     }
-logTurn(logChat);
+    logTurn(logChat);
+
 }
 function attack(userPkmIndex, oppPkmIndex, moveIndex){
+    pkmButtons.forEach(button =>{
+        button.style.display = "none";
+    })
+    moveButtons.forEach(button =>{
+        button.style.display = "none";
+    })
+
+    setTimeout(() => {
+        pkmButtons.forEach(button =>{
+            button.style.display = "block";
+        })
+    }, 2000);
+
+
     userPkm = userPokemonArray[userPkmIndex];
     oppPkm = oppPokemonArray[oppPkmIndex];
     userMove = userPkm.moves[moveIndex];
@@ -540,6 +596,11 @@ function attack(userPkmIndex, oppPkmIndex, moveIndex){
             userMoveLog += `${oppPkm.name} fainted!`;
             logTurn(userMoveLog);
             oppFainted();
+            setTimeout(() => {
+                moveButtons.forEach(button =>{
+                    button.style.display = "block";
+                })
+            }, 2000);
             return;
         }
 
@@ -554,6 +615,13 @@ function attack(userPkmIndex, oppPkmIndex, moveIndex){
             logTurn(userMoveLog, oppMoveLog);
             userFainted();
             return;
+        }
+        else{
+            setTimeout(() => {
+                moveButtons.forEach(button =>{
+                    button.style.display = "block";
+                })
+            }, 2000);
         }
         logTurn(userMoveLog, oppMoveLog);
 
@@ -570,7 +638,13 @@ function attack(userPkmIndex, oppPkmIndex, moveIndex){
             userFainted();
             return;
         }
-
+        else{
+            setTimeout(() => {
+                moveButtons.forEach(button =>{
+                    button.style.display = "block";
+                })
+            }, 2000);
+        }
         // User attacks if still alive
         const userDamage = calculateDamage(userPkm, oppPkm, userMove);
         oppPkm.currHp = Math.max(oppPkm.currHp - userDamage, 0);
@@ -581,6 +655,11 @@ function attack(userPkmIndex, oppPkmIndex, moveIndex){
             userMoveLog += `${oppPkm.name} fainted!`;
             logTurn(oppMoveLog,userMoveLog);
             oppFainted();
+            setTimeout(() => {
+                moveButtons.forEach(button =>{
+                    button.style.display = "block";
+                })
+            }, 2000);
             return;
         }
         logTurn(oppMoveLog, userMoveLog);
@@ -605,9 +684,9 @@ function isFainted(pokemon){
 function userFainted(){
     userFaintedCount++;
     const faintedBall = document.getElementById(`userBall${selectedPokemon}`);
-    faintedBall.src = "/assets/images/pokeball-fainted.png";
+    faintedBall.src = "./assets/images/pokeball-fainted.png";
     const faintedButton = document.getElementById(`pkm${selectedPokemon}`);
-    
+    userSprite.src = "./assets/images/disintegrating-emoji.gif";
     moveButtons.forEach(button => {
         button.style.display = "none"; // Set display to none
     });
@@ -639,14 +718,18 @@ function userFainted(){
 }
 function oppFainted(){
     oppFaintedCount++
+    oppSprite.src = "./assets/images/exploding-car-explode.gif";
     const faintedBall = document.getElementById(`oppBall${oppFaintedCount - 1}`);
-    faintedBall.src = "/assets/images/pokeball-fainted.png";
-    if(oppFaintedCount >= oppPokemonArray.length){
-        endBattle();
-    }else {
-        spawnOppPokemon(oppFaintedCount); // Send out the next opponent Pokémon
-        chatText(`Opponent sent out ${oppPokemonArray[oppFaintedCount].name}!`);
-    }
+    faintedBall.src = "./assets/images/pokeball-fainted.png";
+    setTimeout(() => {
+        if(oppFaintedCount >= oppPokemonArray.length){
+            endBattle();
+        }else {
+            spawnOppPokemon(oppFaintedCount); // Send out the next opponent Pokémon
+            chatText(`Opponent sent out ${oppPokemonArray[oppFaintedCount].name}!`);
+        }
+    }, 2000);
+    
 }
 function chatText(message){
     const newMessage = document.createElement("p");
@@ -682,6 +765,9 @@ updateStats();
 startButton.addEventListener("click",function(){
     startBattle();
     logTurn();
+});
+playButton.addEventListener("click", function(){
+    playAgain();
 });
 pkmButton1.addEventListener("click", function(){
     previousPokemon = selectedPokemon;

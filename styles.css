@@ -46,8 +46,8 @@ body {
 }
 
 .userBall, .oppBall{
-    width: 1vw;
-    display: flex;
+    width: 1.4vw;
+    display: block;
 }
 
 .sprite{
