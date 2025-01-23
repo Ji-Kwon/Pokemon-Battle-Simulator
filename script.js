@@ -592,15 +592,21 @@ function attack(userPkmIndex, oppPkmIndex, moveIndex){
         oppHp.innerHTML = `HP: ${oppPkm.currHp} / ${oppPkm.maxHp}`;
         userMoveLog = `${userPkm.name} used ${userMove.name}!<br>`;
 
+
         if (isFainted(oppPkm)) {
             userMoveLog += `${oppPkm.name} fainted!`;
             logTurn(userMoveLog);
             oppFainted();
-            setTimeout(() => {
-                moveButtons.forEach(button =>{
-                    button.style.display = "block";
-                })
-            }, 2000);
+            if(oppFaintedCount >= oppPokemonArray.length){
+                return;
+            }
+            else{
+                setTimeout(() => {
+                    moveButtons.forEach(button =>{
+                        button.style.display = "block";
+                    })
+                }, 2000);
+            }
             return;
         }
 
@@ -653,13 +659,18 @@ function attack(userPkmIndex, oppPkmIndex, moveIndex){
 
         if (isFainted(oppPkm)) {
             userMoveLog += `${oppPkm.name} fainted!`;
-            logTurn(oppMoveLog,userMoveLog);
+            logTurn(userMoveLog);
             oppFainted();
-            setTimeout(() => {
-                moveButtons.forEach(button =>{
-                    button.style.display = "block";
-                })
-            }, 2000);
+            if(oppFaintedCount >= oppPokemonArray.length){
+                return;
+            }
+            else{
+                setTimeout(() => {
+                    moveButtons.forEach(button =>{
+                        button.style.display = "block";
+                    })
+                }, 2000);
+            }
             return;
         }
         logTurn(oppMoveLog, userMoveLog);
